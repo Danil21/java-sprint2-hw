@@ -1,9 +1,40 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.nio.file.File;
 
 public class ReportManager {
-     
+
+
+    FileReader fileReader = new FileReader();
+    ArrayList<Record> records = new ArrayList<>();
+    void readShoppingList(String fileName) {
+        String content = readFileContentsOrNull(fileName);
+        String[] lines = content.split(System.lineSeparator());
+
+
+        for (int i = 1; i < lines.length; i++) {
+            Record record = makeRecordFromLine(lines[i]);
+            records.add(record);
+        }
+
+        shoppingList = new ShoppingList(records);
+        System.out.println("Список успешно загружен!");
+    }
+
+
+    String readFileContentsOrNull(String path) {
+        try {
+            return Files.readString(Path.of(path));
+        } catch (IOException e) {
+            System.out.println("Невозможно прочитать файл с месячным отчётом. Возможно, файл не находится в нужной директории.");
+            return null;
+        }
+    }
+
+
     Integer calculateMonthlyExpenses(HashMap<Integer, MonthlyReport> monthlyReports) {
         int sum = 0;
         for (MonthlyReport report : monthlyReports.values()) {

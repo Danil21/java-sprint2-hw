@@ -18,7 +18,6 @@ public class Main {
             String commandExt = scanner.nextLine();
 
             if (command == 1) {
-                int currency = scanner.nextInt();
 
             } else if (command == 2) {
               

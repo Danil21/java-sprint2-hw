@@ -1,13 +1,14 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MonthlyReport_for_Test {
 
-    ArrayList<Sale> sales = new ArrayList<>();
+ /*   ArrayList<Record> expens = new ArrayList<>();
 
-        public MonthlyReport(String path) {
+        public MonthlyReport_for_Test(String path) {
             String content = readFileContentsOrNull(path);
             String[] lines = content.split("\n");
             for (int i = 1; i < lines.length; i++) {
@@ -17,10 +18,10 @@ public class MonthlyReport_for_Test {
                 boolean isExpense = Boolean.parseBoolean(parts[1]); //это расходы. True or false
                 int quantity = Integer.parseInt(parts[2]); //количество
                 int sumOfOne = Integer.parseInt(parts[3]); //сумма одного
-    
-    
-                Sale sale = new Sale(title, isExpense,quantity, sumOfOne);
-                sales.add(sale);
+
+
+                ReportList sale = new ReportList(title, isExpense,quantity, sumOfOne);
+                expens.add(sale);
     
     
             }
@@ -86,5 +87,5 @@ public class MonthlyReport_for_Test {
             }
     
     
-        }
+        } */
     }

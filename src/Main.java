@@ -2,9 +2,15 @@ import java.util.Scanner;
 
 public class Main {
 
+    /*Считать все месячные отчёты — прочитать данные из файлов месячных отчётов, сохранить их в память программы.
+     * При выборе действия «считать все месячные отчёты» должно происходить считывание трёх файлов:
+     * Считать годовой отчёт — прочитать данные из файла годового отчёта, сохранить их в память программы.
+     */
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+        ReportManager reportManager = new ReportManager();
 
         while (true) {
             printMenu();
@@ -22,7 +28,7 @@ public class Main {
               
             } else if (command == 5) {
 
-            } else if (command == "пока") {
+            } else if (commandExt == "пока") {
                 System.out.println("Выход");
                 break;
             } else {

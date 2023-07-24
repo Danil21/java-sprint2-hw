@@ -1,13 +1,16 @@
 public class Record {
 
     String name;
+    boolean expense;
     int quantity;
-    double pricePerOne;
+    double unit_price;   
 
-    Record(String newName, int newQuantity, double newPricePerOne) {
+    Record(String newName, boolean newExpense, int newQuantity, double newUnitPrice) {
         name = newName;
-        quantity = newQuantity;
-        pricePerOne = newPricePerOne;
+        expense = newExpense; //является ли запись тратой
+        quantity = newQuantity; //количество закупленного или проданного товара;
+        unit_price = newUnitPrice; //стоимость одной единицы товара. Целое число.
+        
     }
 
 }

@@ -6,5 +6,5 @@ public class MonthlyReport {
     FileReader fileReader = new FileReader();
 
     //fileName – имя файла в папке resources
-    ArrayList<String> lines = fileReader.readFileContents(fileName);
+    //ArrayList<String> lines = fileReader.readFileContents("m");
 }

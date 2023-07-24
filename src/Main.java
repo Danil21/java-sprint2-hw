@@ -18,15 +18,15 @@ public class Main {
             String commandExt = scanner.nextLine();
 
             if (command == 1) {
-
+                reportManager.readReportMonthList("m");
             } else if (command == 2) {
-              
+              reportManager.readReportYearList("y");
             } else if (command == 3) {
 
             } else if (command == 4) {
-              
+                reportManager.printReport();
             } else if (command == 5) {
-
+                reportManager.printReport();
             } else if (commandExt == "пока") {
                 System.out.println("Выход");
                 break;
@@ -43,7 +43,7 @@ public class Main {
         System.out.println("3 - Сверить отчёты");
         System.out.println("4 - Вывести информацию обо всех месячных отчётах");
         System.out.println("5 - Вывести информацию о годовом отчёте");
-        System.out.println("Введите 'пока' для завершения программы");
+        System.out.println("6 - Введите 'пока' для завершения программы");
     }
  }
 

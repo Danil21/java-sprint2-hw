@@ -25,7 +25,7 @@ public class ReportList {
     double calcTotalPrice() {
         double totalPrice = 0.0;
         for (Record record : records) {
-            totalPrice += record.quantity * record.pricePerOne;
+            totalPrice += record.quantity * record.unit_price;
         }
         return totalPrice;
     }

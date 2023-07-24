@@ -7,11 +7,11 @@ import java.util.List;
 
 public class ReportManager {
 
+
+    HashMap<Integer, MonthlyReport> monthlyReports = new HashMap<>();
     FileReader fileReader = new FileReader();
    
     ReportList reportList;
-    
-    
 
         void readReportMonthList(String purposeFile) {
             ArrayList<String> lines = new ArrayList<>();
@@ -29,6 +29,26 @@ public class ReportManager {
         }
 
         reportList = new ReportList(records);
+        System.out.println("Список успешно загружен!");
+    }
+
+    void readReportMonth(String purposeFile) {
+        for(int i=1; i<4; i++){
+            String fileName = purposeFile + ".20210" + i;
+           ArrayList<String> lines = fileReader.readFileContents(fileName);
+            if(lines.isEmpty()){ System.out.println("Файл пустой"); return;}
+        }
+        ArrayList<MonthlyReport> expenses = new ArrayList<>();
+        ArrayList<MonthlyReport> incomes = new ArrayList<>();
+
+        for (int j = 1; j < lines.length; j++) {
+            String line = lines.get(j);
+            S
+            Record record = makeRecordFromLine(lines[i]);
+            records.add(record);
+        }
+
+        monthlyReports.put(i, new MonthlyReport(expenses, incomes));
         System.out.println("Список успешно загружен!");
     }
 

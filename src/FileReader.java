@@ -17,13 +17,13 @@ public class FileReader {
         }
     }
 
-        String readFileContentssss(String purposeFile) {
-            try {
-                return Files.readString(Path.of(pathDir + purposeFile + ".csv"));
-            } catch (IOException e) {
-                System.out.println("Невозможно прочитать файл с месячным отчётом. Возможно, файл не находится в нужной директории.");
-                return null;
-            }
+       String readFileContentsString(String nameFile) {
+        try {
+            return Files.readString(Path.of(pathDir + nameFile + ".csv"));
+        } catch (IOException e) {
+            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл отсутствует в нужной директории.");
+            return null;
+        }
     }
 
     // {"m.202101.csv","m.202102.csv","m.202103.csv"}

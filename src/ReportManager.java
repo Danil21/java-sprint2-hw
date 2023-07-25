@@ -3,54 +3,59 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ReportManager {
 
-
     HashMap<Integer, MonthlyReport> monthlyReports = new HashMap<>();
-    FileReader fileReader = new FileReader();
-   
-    ReportList reportList;
+    private FileReader fileReader = new FileReader();
+    MonthlyReport monthlyReport = new MonthlyReport();
+
+    HashMap<Integer,String> monthReports = new HashMap<>();
+
+  //  ReportList reportList;
 
         void readReportMonthList(String purposeFile) {
-            ArrayList<String> lines = new ArrayList<>();
+            
+            String fileName;
 
             for(int i=1; i<4; i++){
-                String fileName = purposeFile + ".20210" + i;
-                lines = fileReader.readFileContents(fileName);
-                if(lines.isEmpty()){return;}
+                fileName = purposeFile + ".20210" + i;
+                monthReports.put(i, fileReader.readFileContentsString(fileName));
+                if(monthReports.isEmpty()){return;}
             }
 
-          ArrayList<Record> records = new ArrayList<>();
-          for (int i = 1; i < lines.length; i++) {
-            Record record = makeRecordFromLine(lines[i]);
-            records.add(record);
-        }
+            ArrayList<MonthRecord> records = new ArrayList<>();
+            for (Integer key : monthReports.keySet()){ 
+              MonthRecord record = makeRecordFromLine(monthReports.get(key));
+              records.add(record);
+            }
 
-        reportList = new ReportList(records);
+        /* ArrayList<Record> records = new ArrayList<>();
+          for (int i = 1; i < lines.length(); i++) {
+            Record record = 
+            records.add(record);  
+        }*/
+
+      //  reportList = new ReportList(records);
         System.out.println("Список успешно загружен!");
     }
 
-    void readReportMonth(String purposeFile) {
+/*     void readReportMonth(String purposeFile) {
         for(int i=1; i<4; i++){
             String fileName = purposeFile + ".20210" + i;
            ArrayList<String> lines = fileReader.readFileContents(fileName);
             if(lines.isEmpty()){ System.out.println("Файл пустой"); return;}
         }
-        ArrayList<MonthlyReport> expenses = new ArrayList<>();
-        ArrayList<MonthlyReport> incomes = new ArrayList<>();
 
         for (int j = 1; j < lines.length; j++) {
             String line = lines.get(j);
-            S
             Record record = makeRecordFromLine(lines[i]);
             records.add(record);
         }
 
         monthlyReports.put(i, new MonthlyReport(expenses, incomes));
         System.out.println("Список успешно загружен!");
-    }
+    } */
 
       void readReportYearList(String purposeFile) {
                 ArrayList<String> lines;
@@ -63,9 +68,9 @@ public class ReportManager {
 
         }
 
-    Record makeRecordFromLine(String line) {
+    MonthRecord makeRecordFromLine(String line) {
         String[] tokens = line.split(",");
-        return new Record(
+        return new MonthRecord(
             tokens[0],
             Boolean.parseBoolean(tokens[1]),
             Integer.parseInt(tokens[2]),
@@ -74,12 +79,12 @@ public class ReportManager {
     }
 
     void printReport() {
-        if (reportList == null) {
+        if (MonthlyReport == null) {
             System.out.println("Отчет не считан");
         }
 
         System.out.println("Отчет");
-        for (Record record : reportList.records) {
+        for (MonthRecord record : reportList.records) {
             System.out.println(record.name + ", " + record.expense + " доход или трата, " + record.quantity + " шт., " + (record.quantity * record.unit_price) + " руб.");
         }
         System.out.println("Итого: " + reportList.calcTotalPrice() + " руб.");

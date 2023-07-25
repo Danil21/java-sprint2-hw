@@ -1,11 +1,13 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MonthlyReport {
     MonthRecord record;
     ArrayList<MonthRecord> expenses = new ArrayList<>();;
     ArrayList<MonthRecord> incomes = new ArrayList<>();;
     //String nameMonth;
-    private FileReader fileReader = new FileReader();
+    FileReader fileReader = new FileReader();
 
     MonthlyReport(ArrayList<MonthRecord> expenses, ArrayList<MonthRecord> incomes){
         this.expenses = expenses;
@@ -31,5 +33,10 @@ public class MonthlyReport {
             expenses.add(sale);
         }
     }
+
+
+    public HashMap<String, List<MonthRecord>> monthlyReports = new HashMap<>();
+
+
 
 }

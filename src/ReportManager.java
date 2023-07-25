@@ -3,6 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ReportManager {
 
@@ -10,9 +11,8 @@ public class ReportManager {
 
     HashMap<Integer,String> monthReports = new HashMap<>();
 
-    private FileReader fileReader = new FileReader();
+    FileReader fileReader = new FileReader();
     MonthlyReport monthlyReport = new MonthlyReport();
-
 
   //  ReportList reportList;
 
@@ -70,6 +70,56 @@ public class ReportManager {
 
         }
 
+    public void monthLoader(String fileName, String monthName, List<MonthRecord> reports) {
+        // принмает на вход файл и лист,
+        // возвращает лист наполненный
+        // экземпляярами класса SaverMonthly
+        ArrayList<String> monthReports = fileReader.readFileContents(fileName);
+        for (int i = 1; i < monthReports.size(); i++) {
+            String[] partsOfContent = monthReports.get(i).split(","); // item_name,is_expense,quantity,unit_price
+            String itemName = partsOfContent[0];
+            boolean isExpense = Boolean.parseBoolean(partsOfContent[1]);
+            int quantity = Integer.parseInt(partsOfContent[2]);
+            int unitPrice = Integer.parseInt(partsOfContent[3]);
+            // стоимость одной единицы товара
+            MonthRecord saverMonthly = new MonthRecord(itemName, isExpense, quantity, unitPrice, monthName);
+            reports.add(saverMonthly);
+        }
+    }
+
+    public void readAndSaveReports() { // ложит месячнные отчеты в лист, содержащщий
+        // листы с экземплярами класса SaverMonthly
+        if (monthlyReports.isEmpty()) {
+            String monthName;
+            String fileName;
+            for (int i = 1; i < 4; i++) {
+                fileName = "m.20210" + i + ".csv";
+                if (i == 1) {
+                    monthName = "Январь";
+                    List<SaverMonthly> month = new ArrayList<>();
+                    monthLoader(fileName, monthName, month);
+                    monthlyReports.put(monthName,month);
+                    System.out.println("За январь считанно");
+                } else if (i == 2) {
+                    monthName = "Февраль";
+                    List<SaverMonthly> month = new ArrayList<>();
+                    monthLoader(fileName, monthName, month);
+                    monthlyReports.put(monthName,month);
+                    System.out.println("За февраль считанно");
+                } else {
+                    monthName = "Март";
+                    List<SaverMonthly> month = new ArrayList<>();
+                    monthLoader(fileName, monthName, month);
+                    monthlyReports.put(monthName,month);
+                    System.out.println("За март считанно");
+                }
+            }
+        } else {
+            System.out.println("Месячные отчеты уже были считаны!");
+        }
+    }
+
+
     MonthRecord makeRecordFromLine(String line) {
         String[] tokens = line.split(",");
         return new MonthRecord(
@@ -81,7 +131,7 @@ public class ReportManager {
     }
 
     void printReport() {
-        if (MonthlyReport == null) {
+        if (MonthlyReport) {
             System.out.println("Отчет не считан");
         }
 

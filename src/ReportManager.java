@@ -6,11 +6,13 @@ import java.util.HashMap;
 
 public class ReportManager {
 
-    HashMap<Integer, MonthlyReport> monthlyReports = new HashMap<>();
+    //HashMap<Integer, MonthlyReport> monthlyReports = new HashMap<>();
+
+    HashMap<Integer,String> monthReports = new HashMap<>();
+
     private FileReader fileReader = new FileReader();
     MonthlyReport monthlyReport = new MonthlyReport();
 
-    HashMap<Integer,String> monthReports = new HashMap<>();
 
   //  ReportList reportList;
 

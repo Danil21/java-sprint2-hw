@@ -20,14 +20,15 @@ public class Main {
             if (command == 1) {
                 reportManager.readReportMonthList("m");
             } else if (command == 2) {
-              reportManager.readReportYearList("y");
+             
             } else if (command == 3) {
 
             } else if (command == 4) {
-                reportManager.printReport();
+                reportManager.pr();
+               // reportManager.printReport();
             } else if (command == 5) {
-                reportManager.printReport();
-            } else if (commandExt == "пока") {
+               // reportManager.printReport();
+            } else if (command == 6) {
                 System.out.println("Выход");
                 break;
             } else {

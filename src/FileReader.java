@@ -26,8 +26,6 @@ public class FileReader {
         }
     }
 
-    // {"m.202101.csv","m.202102.csv","m.202103.csv"}
-
     String getPurposeFileName(){ // доп метод который определяет пренадлежньсть отчета, если типов отчетов будет больше чем годовой и месячный
         String typeReport = "month";
         if(getNameListFileReport().toString().charAt(0) == 'y'){ typeReport = "year";}
@@ -42,7 +40,7 @@ public class FileReader {
             for(File file : files) {
                 listFileName.add(file.toString());
             }
-        } else { System.out.println("Невзможно прочитать файлы"); return null;}
+        } else {return null;}
 
         ArrayList<Character> charsListFile = new ArrayList<>();
 

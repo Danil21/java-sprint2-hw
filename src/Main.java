@@ -18,16 +18,15 @@ public class Main {
             String commandExt = scanner.nextLine();
 
             if (command == 1) {
-                reportManager.readReportMonthList("m");
+                reportManager.readAllReportMonth("m");
             } else if (command == 2) {
-             
+                reportManager.readAllReportMonth("y");
             } else if (command == 3) {
 
             } else if (command == 4) {
-                reportManager.pr();
-               // reportManager.printReport();
+                reportManager.printReportAllMonth();
             } else if (command == 5) {
-               // reportManager.printReport();
+               reportManager.printYear();
             } else if (command == 6) {
                 System.out.println("Выход");
                 break;

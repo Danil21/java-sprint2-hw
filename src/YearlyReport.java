@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class YearlyReport {
 
@@ -9,13 +10,12 @@ public class YearlyReport {
     средний расход за все имеющиеся операции в году;
     средний доход за все имеющиеся операции в году. */
 
-    ArrayList<YearRecord> yearExpense;
     ArrayList<YearRecord> amount;
-
-
-    YearlyReport(ArrayList<YearRecord> yearExpense, ArrayList<YearRecord> amount){
-        this.yearExpense = yearExpense;
-        this.amount = amount;
+    ArrayList<YearRecord> is_expense;
+    
+    YearlyReport(ArrayList<YearRecord> is_expense, ArrayList<YearRecord> amount){
+        this.amount = amount; //сумма
+        this.is_expense = is_expense; // бозначает, является ли запись тратой (true) или доходом (false).
     }
 
 }

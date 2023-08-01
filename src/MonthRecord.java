@@ -3,13 +3,13 @@ public class MonthRecord {
     String name;
     boolean expense;
     int quantity;
-    double unit_price;   
+    int unit_price;   
 
-    MonthRecord(String Name, boolean Expense, int Quantity, double UnitPrice) {
-        name = Name;
-        expense = Expense; //является ли запись тратой
-        quantity = Quantity; //количество закупленного или проданного товара;
-        unit_price = UnitPrice; //стоимость одной единицы товара. Целое число.
+    MonthRecord(String name, boolean expense, int quantity, int unitPrice) {
+        this.name = name;
+        this.expense = expense; //является ли запись тратой
+        this.quantity = quantity; //количество закупленного или проданного товара;
+        this.unit_price = unitPrice; //стоимость одной единицы товара. Целое число.
     }
 
 }

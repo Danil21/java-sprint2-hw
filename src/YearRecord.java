@@ -5,9 +5,17 @@ public class YearRecord {
     double amount;  
     boolean expense; 
 
-    YearRecord(String NameMonth, double Amount, boolean Expense) {
-        nameMonth = NameMonth;
-        amount = Amount;
-        expense = Expense; 
+    YearRecord(String nameMonth, double amount, boolean expense) {
+        this.nameMonth = nameMonth;
+        this.amount = amount;
+        this.expense = expense; 
+    }
+
+    public String getNameMonth(){
+        return nameMonth;
+    }
+
+    public double getPrice() {
+        return amount;
     }
 }

@@ -24,7 +24,7 @@ public class Main {
             } else if (command == 3) {
 
             } else if (command == 4) {
-                reportManager.printReportAllMonth();
+                reportManager.printReportMonths();
             } else if (command == 5) {
                reportManager.printYear();
             } else if (command == 6) {

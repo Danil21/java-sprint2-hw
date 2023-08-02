@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReportManager {
 
@@ -24,7 +25,6 @@ public class ReportManager {
 
                 ArrayList<MonthRecord> expenses = new ArrayList<>();
                 ArrayList<MonthRecord> incomes = new ArrayList<>();
-               // ArrayList<MonthRecord> listRecords = new ArrayList<>();
                   
         for (int j = 1; j < lines.size(); j++) {
 
@@ -33,7 +33,6 @@ public class ReportManager {
             if(record.expense){expenses.add(record);}
             else {incomes.add(record);}
 
-            //listRecords.add(listRecords);
             monthlyReport = new MonthlyReport(expenses, incomes);
         }
 
@@ -64,18 +63,63 @@ public class ReportManager {
              System.out.println("Отчет за: " + key);
         }
     }
+
     /*    название месяца;
     самый прибыльный товар, название товара и сумму;
     самую большую трату, название товара и сумму. */
     void printReportMonths() {
         if (monthlyReport == null) {System.out.println("Отчет не считан"); return;}
-        for (String key : MonthReports.keySet()) {
-             System.out.println("Отчет за: " + key);
-             System.out.println("Самый прибыльный товар: " + "проданный на сумму " + getMostProfitableProduct(MonthReports)+ " руб.");       
+
+            for(MonthlyReport reports : MonthReports.values()){
+
+             System.out.println(getKeyMap(MonthReports, reports));
+             System.out.println("Самый прибыльный товар: " + "проданный на сумму " + getMostProfitable(reports) + " руб.");
+            }     
+    }
+
+    String getNameBestProduct(HashMap<Integer, MonthlyReport> monthlyReports) {
+        String nameProduct ="";
+    for (MonthlyReport report : monthlyReports.values()) {
+        for (int i = 0; i < report.incomes.size(); i++) {
+            MonthRecord record = report.incomes.get(i);
+            nameProduct = record.name;
         }
     }
 
-    ArrayList<Integer> getMostProfitableProduct(HashMap <String, MonthlyReport> monthlyReports){
+    return nameProduct;
+}
+
+    HashMap<String,Integer> getMostProfitable(MonthlyReport monthlyReport){
+        int bestPriceProduct = 0;
+        String nameProduct = "";
+        HashMap<String,Integer> productProfitable = new HashMap<>();
+
+            for (int i = 0; i < monthlyReport.incomes.size(); i++) {
+
+                MonthRecord record = monthlyReport.incomes.get(i);
+                if(record.unit_price > bestPriceProduct){
+                    bestPriceProduct = record.unit_price;
+                    nameProduct = record.name;
+                }
+                productProfitable.put(nameProduct,bestPriceProduct);
+        }
+
+        return productProfitable;
+    }
+
+   public <K, V> String getKeyMap(HashMap <String, MonthlyReport> map, V value)
+    {
+        for (String key: map.keySet())
+        {
+            if (value.equals(map.get(key))) {
+                return key;
+            }
+        }
+        return null;
+    }
+ 
+
+  /*      ArrayList<Integer> getMostProfitableProduct(HashMap <String, MonthlyReport> monthlyReports){
         int bestPriceProduct = 0;
         ArrayList<Integer> listBestPriceProduct = new ArrayList<>();
  
@@ -96,7 +140,7 @@ public class ReportManager {
 
         return listBestPriceProduct;
     }
-
+*/ 
 
 
     void printYear() {

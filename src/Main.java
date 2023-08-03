@@ -8,30 +8,31 @@ public class Main {
      */
 
     public static void main(String[] args) {
+        
+        try (Scanner scanner = new Scanner(System.in)) {
+            ReportManager reportManager = new ReportManager();
 
-        Scanner scanner = new Scanner(System.in);
-        ReportManager reportManager = new ReportManager();
+            while (true) {
+                printMenu();
+                int command = scanner.nextInt();
+                //String commandExt = scanner.nextLine();
 
-        while (true) {
-            printMenu();
-            int command = scanner.nextInt();
-            String commandExt = scanner.nextLine();
-
-            if (command == 1) {
-                reportManager.readAllReportMonth("m");
-            } else if (command == 2) {
-                reportManager.readAllReportMonth("y");
-            } else if (command == 3) {
-
-            } else if (command == 4) {
-                reportManager.printReportMonths();
-            } else if (command == 5) {
-               reportManager.printYear();
-            } else if (command == 6) {
-                System.out.println("Выход");
-                break;
-            } else {
-                System.out.println("Извините, такой команды пока нет.");
+                if (command == 1) {
+                    reportManager.readAllReportMonth("m");
+                } else if (command == 2) {
+                    reportManager.readYearlyReport("y");
+                } else if (command == 3) {
+                    reportManager.verifyReports(reportManager.MonthReports,reportManager.YearReports);
+                } else if (command == 4) {
+                    reportManager.printReportMonths();
+                } else if (command == 5) {
+                   reportManager.printYearReport();
+                } else if (command == 6) {
+                    System.out.println("Выход");
+                    break;
+                } else {
+                    System.out.println("Извините, такой команды пока нет.");
+                }
             }
         }
     }

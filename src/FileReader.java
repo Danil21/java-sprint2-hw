@@ -17,15 +17,6 @@ public class FileReader {
         }
     }
 
-       String readFileContentsString(String nameFile) {
-        try {
-            return Files.readString(Path.of(pathDir + nameFile + ".csv"));
-        } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл отсутствует в нужной директории.");
-            return null;
-        }
-    }
-
     String getPurposeFileName(){ // доп метод который определяет пренадлежньсть отчета, если типов отчетов будет больше чем годовой и месячный
         String typeReport = "month";
         if(getNameListFileReport().toString().charAt(0) == 'y'){ typeReport = "year";}

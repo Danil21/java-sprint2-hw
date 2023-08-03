@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class MonthlyReport_for_Test {
 
- /*   ArrayList<Record> expens = new ArrayList<>();
+   ArrayList<Record> expens = new ArrayList<>();
 
         public MonthlyReport_for_Test(String path) {
             String content = readFileContentsOrNull(path);
@@ -39,7 +39,7 @@ public class MonthlyReport_for_Test {
             HashMap<String, Integer> freqs = new HashMap<>();
             for (Sale sale : sales) {
                 if (sale.isExpense = false) {
-                    freqs.put(sale.title,freqs.getOrDefault(sale.title,0) + sale.quantity * sale.sumOfOne );
+                    freqs.put(sale.title, freqs.getOrDefault(sale.title, 0) + sale.quantity * sale.sumOfOne );
                 }
             }
 
@@ -54,7 +54,7 @@ public class MonthlyReport_for_Test {
                 }
             }
             return maxTitle;
-        }
+            }
     
     
          Integer getTopProductChost() {

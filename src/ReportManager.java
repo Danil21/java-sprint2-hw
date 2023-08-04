@@ -9,8 +9,6 @@ public class ReportManager {
     HashMap<String, MonthlyReport> MonthReports = new HashMap<>();
     HashMap<String, YearlyReport> YearReports = new HashMap<>();
 
-        HashMap<String,Integer> productProfitableTEST = new HashMap<>();
-
     private final FileReader fileReader = new FileReader();
 
     String[] manthName = {"Январь","Февраль","Март"};
@@ -132,26 +130,6 @@ public class ReportManager {
         }
         productProfitable.put(nameProduct,bestPriceProduct);
         return productProfitable;
-    }
-
-        
-        HashMap<String,Integer> getMostProfitableTest(HashMap <String, MonthlyReport> monthlyReports){
-        int bestPriceProduct = 0;
-        String nameProduct = "";
-
-
-         for (MonthlyReport report : monthlyReports.values()) {
-            for (int i = 0; i < report.expenses.size(); i++) {
-
-            MonthRecord record = report.expenses.get(i);
-            if(record.unit_price > bestPriceProduct){
-                bestPriceProduct = record.unit_price;
-                nameProduct = record.name;
-            }
-         }
-        }
-        productProfitableTEST.put(nameProduct,bestPriceProduct);
-        return productProfitableTEST;
     }
 
     Integer calculateMonthlyExpenses(HashMap <String, MonthlyReport> monthlyReports) {

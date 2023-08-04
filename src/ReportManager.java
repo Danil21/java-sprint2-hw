@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ReportManager {
 
@@ -94,13 +93,10 @@ public class ReportManager {
         if (monthlyReport == null) {System.out.println("Отчет не считан"); return;}
 
         for(String keyMap : manthName){
-        //    for(Map.Entry<String,Integer> entry : productProfitableTEST.entrySet()){
-
             System.out.println("\n" + keyMap + ":");
             System.out.println("Самый прибыльный товар " +  getMostProfitable(MonthReports.get(keyMap)) + " руб.");
             System.out.println("Самая большая трата " + getBigWaste(MonthReports.get(keyMap)) + " руб.");
          } 
-      //  }
     }
 
     HashMap<String,Integer> getBigWaste(MonthlyReport monthlyReport){
@@ -157,33 +153,6 @@ public class ReportManager {
         productProfitableTEST.put(nameProduct,bestPriceProduct);
         return productProfitableTEST;
     }
-
- /*    String getTopProduct(MonthlyReport monthlyReport) {
-        HashMap<String, Integer> freqs = new HashMap<>();
-
-        for(String keyMap : manthName){
-        for (MonthReport sale : monthlyReport.get(keyMap)) {
-            if (sale.isExpense = false) {
-                freqs.put(sale.title, freqs.getOrDefault(sale.title, 0) + sale.quantity * sale.sumOfOne );
-            }
-        }
-    }
-
-
-        String maxTitle = null;
-        for (String title : freqs.keySet()) {
-            if (maxTitle == null) {
-                maxTitle = title;
-                continue;
-            }
-            if (freqs.get(maxTitle) < freqs.get(title)) {
-                maxTitle = title;
-            }
-        }
-        return maxTitle;
-        }
-*/
-
 
     Integer calculateMonthlyExpenses(HashMap <String, MonthlyReport> monthlyReports) {
         int sum = 0;
@@ -327,29 +296,5 @@ public class ReportManager {
         System.out.println("\n Данные успешно сверены. Несоответствий не выявлено! \n");
         return true;
     }
-
-
-
- /*
-    void printReport() {
-        if (monthlyReport == null) {System.out.println("Отчет не считан"); return;}
-
-        System.out.println("Отчет:");
-        for (MonthRecord record : monthlyReport.records) {
-            System.out.println("Наименование: " + record.name + ", " + record.expense + " доход или трата, " + record.quantity + " шт., " + (record.quantity * record.unit_price) + " руб.");
-        }
-    }
- */
- 
-       public <K, V> String getKeyMap(HashMap <String, MonthlyReport> map, V value){
-        for (String key: map.keySet())
-        {
-            if (value.equals(map.get(key))) {
-                return key;
-            }
-        }
-        return null;
-    }
-
 
 }

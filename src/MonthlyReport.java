@@ -8,18 +8,10 @@ public class MonthlyReport {
     
     ArrayList<MonthRecord> expenses;
     ArrayList<MonthRecord> incomes;
-   // ArrayList<MonthRecord> records;
 
     MonthlyReport(ArrayList<MonthRecord> expenses, ArrayList<MonthRecord> incomes){
         this.expenses = expenses;
         this.incomes = incomes;
     }
-
-   /* MonthlyReport(ArrayList<MonthRecord> records){
-        this.records = records;
-    }
- */
-    
-
 
 }

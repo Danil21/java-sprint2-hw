@@ -6,10 +6,11 @@ public class ReportManager {
 
     MonthlyReport monthlyReport;
     YearlyReport yearlyReport;
-    HashMap<String, MonthlyReport> MonthReports = new HashMap<>();
+    HashMap<String, MonthlyReport> monthlyReports = new HashMap<>();
     HashMap<String, YearlyReport> YearReports = new HashMap<>();
 
-    private final FileReader fileReader = new FileReader();
+    private FileReader fileReader = new FileReader();
+    static String pathDir = "./resources/";
 
     String[] manthName = {"Январь","Февраль","Март"};
 
@@ -20,7 +21,7 @@ public class ReportManager {
         for(int i=1; i<4; i++){
 
             fileName = purposeFile + ".20210" + i;
-            List<String> lines = fileReader.readFileContents(fileName);
+            List<String> lines = fileReader.readFileContents(pathDir,fileName);
 
             ArrayList<MonthRecord> expenses = new ArrayList<>();
             ArrayList<MonthRecord> incomes = new ArrayList<>();
@@ -42,15 +43,44 @@ public class ReportManager {
     }
 
 
+    void readMonthlyReports() {
+        for (int i = 1; i < availableMonths(); i++) {
+            ArrayList<Record> monthExpenses = new ArrayList<>();
+            ArrayList<Record> monthEarnings = new ArrayList<>();
+
+            String fileName = "m.20210" + i + ".csv";
+            List<String> lines = fileReader.readFileContents((pathDir + fileName);
+
+            if (lines.isEmpty()) {return;}
+            
+            for (int j = 1; j < lines.size(); j++) {
+                String line = lines.get(j);
+                String[] lineContents = line.split(",");
+                Record record = lineToRecord(lineContents);
+                if (lineContents[1].equals("TRUE")) {
+                    monthExpenses.add(record);
+                } else {
+                    monthEarnings.add(record);
+                }
+            }
+            monthlyReports.put(i, new MonthlyReport(2021, i, monthExpenses, monthEarnings));
+        }
+    }
+// да тут хардкод, но для текущих знаний это ок
+    int availableMonths() {
+        return 4;
+    }
+
+
     void readYearlyReport(String purposeFile) {
 
         String  fileName = purposeFile + ".2021";
-        List<String> lines = fileReader.readFileContents(fileName);
+        List<String> lines = fileReader.readFileContents(pathDir,fileName);
 
         ArrayList<YearRecord> expenses = new ArrayList<>();
         ArrayList<YearRecord> incomes = new ArrayList<>();
 
-        for(int i=1; i<4; i++){
+        for(int i=1; i<availableMonths(); i++){
             for (int j = 1; j < lines.size(); j++) {
                 YearRecord record = makeRecordFromLineYear(lines.get(j));
 
@@ -105,8 +135,8 @@ public class ReportManager {
         for (int i = 0; i < monthlyReport.expenses.size(); i++) {
 
             MonthRecord record = monthlyReport.expenses.get(i);
-            if(record.unit_price > bestPriceProduct){
-                bestPriceProduct = record.unit_price;
+            if(record.unitPrice > bestPriceProduct){
+                bestPriceProduct = record.unitPrice;
                 nameProduct = record.name;
             }
 
@@ -123,8 +153,8 @@ public class ReportManager {
         for (int i = 0; i < monthlyReport.incomes.size(); i++) {
 
             MonthRecord record = monthlyReport.incomes.get(i);
-            if(record.unit_price > bestPriceProduct){
-                bestPriceProduct = record.unit_price;
+            if(record.unitPrice > bestPriceProduct){
+                bestPriceProduct = record.unitPrice;
                 nameProduct = record.name;
             }
         }
@@ -137,7 +167,7 @@ public class ReportManager {
         for (MonthlyReport report : monthlyReports.values()) {
             for (int i = 0; i < report.expenses.size(); i++) {
                 MonthRecord record = report.expenses.get(i);
-                sum += record.unit_price * record.quantity;
+                sum += record.unitPrice * record.quantity;
             }
         }
 
@@ -149,7 +179,7 @@ public class ReportManager {
         for (MonthlyReport report : monthlyReports.values()) {
             for (int i = 0; i < report.incomes.size(); i++) {
                 MonthRecord record = report.incomes.get(i);
-                sum += record.unit_price * record.quantity;
+                sum += record.unitPrice * record.quantity;
             }
         }
 
@@ -161,7 +191,7 @@ public class ReportManager {
         for (MonthlyReport report : monthlyReports.values()) {
             for (int i = 0; i < report.incomes.size(); i++) {
                 MonthRecord record = report.incomes.get(i);
-                sum += record.unit_price * record.quantity;
+                sum += record.unitPrice * record.quantity;
             }
         }
 
@@ -260,13 +290,13 @@ public class ReportManager {
             System.out.println("\n Ошибка, не считан один из отчетов. \n");
             return false;
         }
-
-        if (calculateYearlyIncomes(yearlyReport) != calculateMonthlyIncomes(monthlyReports)) {
+        //будет выводиться именно этот блок так как есть расхождение в феврале
+        if (!calculateYearlyIncomes(yearlyReport).equals(calculateMonthlyIncomes(monthlyReports))) {
             System.out.println("\n Выявлено несоответствие данных по доходам в месяце! \n");
             return false;
         }
 
-        if (calculateYearlyExpenses(yearlyReport) != calculateMonthlyExpenses(monthlyReports)) {
+        if (!calculateYearlyExpenses(yearlyReport).equals(calculateMonthlyExpenses(monthlyReports))) {
             System.out.println("\n Выявлено несоответствие данных по расходам в месяце! \n");
             return false;
         }

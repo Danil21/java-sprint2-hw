@@ -6,9 +6,7 @@ import java.io.File;
 
 public class FileReader {
 
-   static final String pathDir = "./resources/";
-
-   ArrayList<String> readFileContents(String nameFile) {
+   ArrayList<String> readFileContents(String pathDir, String nameFile) {
         try {
             return new ArrayList<>(Files.readAllLines(Path.of(pathDir + nameFile + ".csv")));
         } catch (IOException e) {
@@ -24,7 +22,7 @@ public class FileReader {
     }
 
     ArrayList<Character> getNameListFileReport(){
-        File[] files = new File(pathDir).listFiles();
+        File[] files = new File(ReportManager.pathDir).listFiles();
         ArrayList<String> listFileName = new ArrayList<>();
 
         if (files != null) {

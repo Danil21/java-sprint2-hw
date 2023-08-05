@@ -6,9 +6,7 @@ import java.io.File;
 
 public class FileReader {
 
-   static final String pathDir = "./resources/";
-
-   ArrayList<String> readFileContents(String nameFile) {
+   ArrayList<String> readFileContents(String pathDir, String nameFile) {
         try {
             return new ArrayList<>(Files.readAllLines(Path.of(pathDir + nameFile + ".csv")));
         } catch (IOException e) {
@@ -17,17 +15,6 @@ public class FileReader {
         }
     }
 
-       String readFileContentsString(String nameFile) {
-        try {
-            return Files.readString(Path.of(pathDir + nameFile + ".csv"));
-        } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл отсутствует в нужной директории.");
-            return null;
-        }
-    }
-
-    // {"m.202101.csv","m.202102.csv","m.202103.csv"}
-
     String getPurposeFileName(){ // доп метод который определяет пренадлежньсть отчета, если типов отчетов будет больше чем годовой и месячный
         String typeReport = "month";
         if(getNameListFileReport().toString().charAt(0) == 'y'){ typeReport = "year";}
@@ -35,14 +22,14 @@ public class FileReader {
     }
 
     ArrayList<Character> getNameListFileReport(){
-        File[] files = new File(pathDir).listFiles();
+        File[] files = new File(ReportManager.pathDir).listFiles();
         ArrayList<String> listFileName = new ArrayList<>();
 
         if (files != null) {
             for(File file : files) {
                 listFileName.add(file.toString());
             }
-        } else { System.out.println("Невзможно прочитать файлы"); return null;}
+        } else {return null;}
 
         ArrayList<Character> charsListFile = new ArrayList<>();
 

@@ -1,176 +1,208 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class ReportManager {
 
-    //HashMap<Integer, MonthlyReport> monthlyReports = new HashMap<>();
+    MonthlyReport monthlyReport;
+    YearlyReport yearlyReport;
+    HashMap<String, MonthlyReport> monthlyReports = new HashMap<>();
+    HashMap<String, YearlyReport> YearReports = new HashMap<>();
 
-    HashMap<Integer,String> monthReports = new HashMap<>();
+    private FileReader fileReader = new FileReader();
+    static String pathDir = "./resources/";
 
-    FileReader fileReader = new FileReader();
-    MonthlyReport monthlyReport = new MonthlyReport();
+    String[] manthName = {"Январь","Февраль","Март"};
 
-  //  ReportList reportList;
+    void readAllReportMonth(String purposeFile) {
 
-        void readReportMonthList(String purposeFile) {
-            
-            String fileName;
+        String fileName;
 
-            for(int i=1; i<4; i++){
-                fileName = purposeFile + ".20210" + i;
-                monthReports.put(i, fileReader.readFileContentsString(fileName));
-                if(monthReports.isEmpty()){return;}
-            }
-
-            ArrayList<MonthRecord> records = new ArrayList<>();
-            for (Integer key : monthReports.keySet()){ 
-              MonthRecord record = makeRecordFromLine(monthReports.get(key));
-              records.add(record);
-            }
-
-        /* ArrayList<Record> records = new ArrayList<>();
-          for (int i = 1; i < lines.length(); i++) {
-            Record record = 
-            records.add(record);  
-        }*/
-
-      //  reportList = new ReportList(records);
-        System.out.println("Список успешно загружен!");
-    }
-
-/*     void readReportMonth(String purposeFile) {
         for(int i=1; i<4; i++){
-            String fileName = purposeFile + ".20210" + i;
-           ArrayList<String> lines = fileReader.readFileContents(fileName);
-            if(lines.isEmpty()){ System.out.println("Файл пустой"); return;}
+
+            fileName = purposeFile + ".20210" + i;
+            List<String> lines = fileReader.readFileContents(pathDir,fileName);
+
+            ArrayList<MonthRecord> expenses = new ArrayList<>();
+            ArrayList<MonthRecord> incomes = new ArrayList<>();
+
+            for (int j = 1; j < lines.size(); j++) {
+
+                String lin = lines.get(j);
+                MonthRecord record = makeRecordFromLine(lin);
+                if(record.expense){expenses.add(record);}
+                else {incomes.add(record);}
+
+                monthlyReport = new MonthlyReport(expenses, incomes);
+            }
+
+            MonthReports.put(manthName[i-1], monthlyReport);
         }
 
-        for (int j = 1; j < lines.length; j++) {
-            String line = lines.get(j);
-            Record record = makeRecordFromLine(lines[i]);
-            records.add(record);
-        }
-
-        monthlyReports.put(i, new MonthlyReport(expenses, incomes));
-        System.out.println("Список успешно загружен!");
-    } */
-
-      void readReportYearList(String purposeFile) {
-                ArrayList<String> lines;
-                String fileName = purposeFile + ".2021";
-                lines = fileReader.readFileContents(fileName);
-                if(lines.isEmpty()){return;}
-            
-           
-        System.out.println("Список успешно загружен!");
-
-        }
-
-    public void monthLoader(String fileName, String monthName, List<MonthRecord> reports) {
-        // принмает на вход файл и лист,
-        // возвращает лист наполненный
-        // экземпляярами класса SaverMonthly
-        ArrayList<String> monthReports = fileReader.readFileContents(fileName);
-        for (int i = 1; i < monthReports.size(); i++) {
-            String[] partsOfContent = monthReports.get(i).split(","); // item_name,is_expense,quantity,unit_price
-            String itemName = partsOfContent[0];
-            boolean isExpense = Boolean.parseBoolean(partsOfContent[1]);
-            int quantity = Integer.parseInt(partsOfContent[2]);
-            int unitPrice = Integer.parseInt(partsOfContent[3]);
-            // стоимость одной единицы товара
-            MonthRecord saverMonthly = new MonthRecord(itemName, isExpense, quantity, unitPrice, monthName);
-            reports.add(saverMonthly);
-        }
+        System.out.println("\n Месячные отчеты успешно загружены! \n");
     }
 
-    public void readAndSaveReports() { // ложит месячнные отчеты в лист, содержащщий
-        // листы с экземплярами класса SaverMonthly
-        if (monthlyReports.isEmpty()) {
-            String monthName;
-            String fileName;
-            for (int i = 1; i < 4; i++) {
-                fileName = "m.20210" + i + ".csv";
-                if (i == 1) {
-                    monthName = "Январь";
-                    List<SaverMonthly> month = new ArrayList<>();
-                    monthLoader(fileName, monthName, month);
-                    monthlyReports.put(monthName,month);
-                    System.out.println("За январь считанно");
-                } else if (i == 2) {
-                    monthName = "Февраль";
-                    List<SaverMonthly> month = new ArrayList<>();
-                    monthLoader(fileName, monthName, month);
-                    monthlyReports.put(monthName,month);
-                    System.out.println("За февраль считанно");
+
+    void readMonthlyReports() {
+        for (int i = 1; i < availableMonths(); i++) {
+            ArrayList<Record> monthExpenses = new ArrayList<>();
+            ArrayList<Record> monthEarnings = new ArrayList<>();
+
+            String fileName = "m.20210" + i + ".csv";
+            List<String> lines = fileReader.readFileContents((pathDir + fileName);
+
+            if (lines.isEmpty()) {return;}
+            
+            for (int j = 1; j < lines.size(); j++) {
+                String line = lines.get(j);
+                String[] lineContents = line.split(",");
+                Record record = lineToRecord(lineContents);
+                if (lineContents[1].equals("TRUE")) {
+                    monthExpenses.add(record);
                 } else {
-                    monthName = "Март";
-                    List<SaverMonthly> month = new ArrayList<>();
-                    monthLoader(fileName, monthName, month);
-                    monthlyReports.put(monthName,month);
-                    System.out.println("За март считанно");
+                    monthEarnings.add(record);
                 }
             }
-        } else {
-            System.out.println("Месячные отчеты уже были считаны!");
+            monthlyReports.put(i, new MonthlyReport(2021, i, monthExpenses, monthEarnings));
         }
+    }
+// да тут хардкод, но для текущих знаний это ок
+    int availableMonths() {
+        return 4;
+    }
+
+
+    void readYearlyReport(String purposeFile) {
+
+        String  fileName = purposeFile + ".2021";
+        List<String> lines = fileReader.readFileContents(pathDir,fileName);
+
+        ArrayList<YearRecord> expenses = new ArrayList<>();
+        ArrayList<YearRecord> incomes = new ArrayList<>();
+
+        for(int i=1; i<availableMonths(); i++){
+            for (int j = 1; j < lines.size(); j++) {
+                YearRecord record = makeRecordFromLineYear(lines.get(j));
+
+                if(record.expense){expenses.add(record);}
+                else {incomes.add(record);}
+                yearlyReport = new YearlyReport(expenses,incomes);
+            }
+            YearReports.put(manthName[i-1], yearlyReport);
+        }
+        System.out.println("\n Готовой отчет успешно загружен! \n");
     }
 
 
     MonthRecord makeRecordFromLine(String line) {
         String[] tokens = line.split(",");
         return new MonthRecord(
-            tokens[0],
-            Boolean.parseBoolean(tokens[1]),
-            Integer.parseInt(tokens[2]),
-            Double.parseDouble(tokens[3])
+                tokens[0],
+                Boolean.parseBoolean(tokens[1]),
+                Integer.parseInt(tokens[2]),
+                Integer.parseInt(tokens[3])
         );
     }
 
-    void printReport() {
-        if (MonthlyReport) {
-            System.out.println("Отчет не считан");
-        }
-
-        System.out.println("Отчет");
-        for (MonthRecord record : reportList.records) {
-            System.out.println(record.name + ", " + record.expense + " доход или трата, " + record.quantity + " шт., " + (record.quantity * record.unit_price) + " руб.");
-        }
-        System.out.println("Итого: " + reportList.calcTotalPrice() + " руб.");
+    YearRecord makeRecordFromLineYear(String line) {
+        String[] tokens = line.split(",");
+        return new YearRecord(
+                tokens[0],
+                Integer.parseInt(tokens[1]),
+                Boolean.parseBoolean(tokens[2])
+        );
     }
 
-  /*   Integer calculateMonthlyExpenses(HashMap<Integer, MonthlyReport> monthlyReports) {
+
+    /*    название месяца;
+    самый прибыльный товар, название товара и сумму;
+    самую большую трату, название товара и сумму. */
+    void printReportMonths() {
+        if (monthlyReport == null) {System.out.println("Отчет не считан"); return;}
+
+        for(String keyMap : manthName){
+            System.out.println("\n" + keyMap + ":");
+            System.out.println("Самый прибыльный товар " +  getMostProfitable(MonthReports.get(keyMap)) + " руб.");
+            System.out.println("Самая большая трата " + getBigWaste(MonthReports.get(keyMap)) + " руб.");
+         } 
+    }
+
+    HashMap<String,Integer> getBigWaste(MonthlyReport monthlyReport){
+        int bestPriceProduct = 0;
+        String nameProduct = "";
+        HashMap<String,Integer> productProfitable = new HashMap<>();
+
+        for (int i = 0; i < monthlyReport.expenses.size(); i++) {
+
+            MonthRecord record = monthlyReport.expenses.get(i);
+            if(record.unitPrice > bestPriceProduct){
+                bestPriceProduct = record.unitPrice;
+                nameProduct = record.name;
+            }
+
+        }
+        productProfitable.put(nameProduct,bestPriceProduct);
+        return productProfitable;
+    }
+
+    HashMap<String,Integer> getMostProfitable(MonthlyReport monthlyReport){
+        int bestPriceProduct = 0;
+        String nameProduct = "";
+        HashMap<String,Integer> productProfitable = new HashMap<>();
+
+        for (int i = 0; i < monthlyReport.incomes.size(); i++) {
+
+            MonthRecord record = monthlyReport.incomes.get(i);
+            if(record.unitPrice > bestPriceProduct){
+                bestPriceProduct = record.unitPrice;
+                nameProduct = record.name;
+            }
+        }
+        productProfitable.put(nameProduct,bestPriceProduct);
+        return productProfitable;
+    }
+
+    Integer calculateMonthlyExpenses(HashMap <String, MonthlyReport> monthlyReports) {
         int sum = 0;
         for (MonthlyReport report : monthlyReports.values()) {
             for (int i = 0; i < report.expenses.size(); i++) {
-                ReportEngine.Record record = report.expenses.get(i);
-                sum += record.price * record.quantity;
+                MonthRecord record = report.expenses.get(i);
+                sum += record.unitPrice * record.quantity;
             }
         }
 
         return sum;
     }
-    
-    Integer calculateMonthlyIncomes(HashMap<Integer, MonthlyReport> monthlyReports) {
+
+    Integer calculateMonthlyIncomes(HashMap<String, MonthlyReport> monthlyReports) {
         int sum = 0;
         for (MonthlyReport report : monthlyReports.values()) {
             for (int i = 0; i < report.incomes.size(); i++) {
-                ReportEngine.Record record = report.incomes.get(i);
-                sum += record.price * record.quantity;
+                MonthRecord record = report.incomes.get(i);
+                sum += record.unitPrice * record.quantity;
             }
         }
 
         return sum;
     }
 
-    Integer calculateYearlyExpenses(HashMap<Integer, YearlyReport> yearlyReport) {
+        Integer bestProductMonthly(HashMap<String, MonthlyReport> monthlyReports) {
+        int sum = 0;
+        for (MonthlyReport report : monthlyReports.values()) {
+            for (int i = 0; i < report.incomes.size(); i++) {
+                MonthRecord record = report.incomes.get(i);
+                sum += record.unitPrice * record.quantity;
+            }
+        }
+
+        return sum;
+    }
+
+    Integer calculateYearlyExpenses(HashMap<String, YearlyReport> yearlyReport) {
         int sum = 0;
         for (YearlyReport report : yearlyReport.values()) {
             for (int i = 1; i < report.expenses.size(); i++) {
-                ReportEngine.Record record = report.expenses.get(i);
+                YearRecord record = report.expenses.get(i);
                 sum += record.getPrice();
             }
         }
@@ -178,11 +210,62 @@ public class ReportManager {
         return sum;
     }
 
-    Integer calculateYearlyIncomes(HashMap<Integer, YearlyReport> yearlyRep) {
+        /* Информация из годового отчёта.
+     При вызове этой функции программа должна выводить такие данные:
+    рассматриваемый год;
+    прибыль по каждому месяцу;
+    средний расход за все имеющиеся операции в году;
+    средний доход за все имеющиеся операции в году. */
+
+    void printYearReport() {
+        if (yearlyReport == null) {System.out.println("Отчет не считан"); return;}
+
+        for(String keyMap : manthName){
+            System.out.println("\n" + keyMap);
+            System.out.println("Прибыль: " + getProfitForMonth(YearReports.get(keyMap)) + " руб.");
+            System.out.println("Средний расход: " + getAverageExpenseForYear(YearReports) + " руб.");
+            System.out.println("Средний доход: " + calculateYearlyIncomesAverage(YearReports) + " руб.");
+        }
+
+    }
+
+
+    Integer getAverageExpenseForYear(HashMap<String, YearlyReport> yearlyReport) {
+        int sum = 0;
+        for (YearlyReport report : yearlyReport.values()) {
+            for (int i = 1; i < report.expenses.size(); i++) {
+                YearRecord record = report.expenses.get(i);
+                sum += record.getPrice() / report.expenses.size();
+            }
+        }
+        return sum;
+    }
+
+    //прибыль по месяцу;
+    int getProfitForMonth(YearlyReport yearlyReport){
+
+        int expAmount=0;
+        int incAmount=0;
+
+        for (int i = 0; i < yearlyReport.expenses.size(); i++) {
+            YearRecord recordExpenses = yearlyReport.expenses.get(i);
+            expAmount += recordExpenses.amount;
+        }
+
+        for (int i = 0; i < yearlyReport.incomes.size(); i++) {
+            YearRecord recordIncomes = yearlyReport.incomes.get(i);
+            incAmount += recordIncomes.amount;
+        }
+
+        return incAmount - expAmount;
+    }
+
+
+    Integer calculateYearlyIncomes(HashMap<String, YearlyReport> yearlyRep) {
         int sum = 0;
         for (YearlyReport report : yearlyRep.values()) {
             for (int i = 1; i < report.incomes.size(); i++) {
-                ReportEngine.Record record = report.incomes.get(i);
+                YearRecord record = report.incomes.get(i);
                 sum += record.getPrice();
             }
         }
@@ -190,23 +273,36 @@ public class ReportManager {
         return sum;
     }
 
-    Boolean verifyReports(HashMap<Integer, MonthlyReport> monthlyReports, HashMap<Integer, YearlyReport> yearlyReport) {
+    Integer calculateYearlyIncomesAverage(HashMap<String, YearlyReport> yearlyRep) {
+        int sum = 0;
+        for (YearlyReport report : yearlyRep.values()) {
+            for (int i = 1; i < report.incomes.size(); i++) {
+                YearRecord record = report.incomes.get(i);
+                sum += record.getPrice() / report.incomes.size();
+            }
+        }
+
+        return sum;
+    }
+
+    Boolean verifyReports(HashMap<String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyReport) {
         if (yearlyReport.size() == 0 || monthlyReports.size() == 0) {
-            System.out.println("Ошибка!");
+            System.out.println("\n Ошибка, не считан один из отчетов. \n");
+            return false;
+        }
+        //будет выводиться именно этот блок так как есть расхождение в феврале
+        if (!calculateYearlyIncomes(yearlyReport).equals(calculateMonthlyIncomes(monthlyReports))) {
+            System.out.println("\n Выявлено несоответствие данных по доходам в месяце! \n");
             return false;
         }
 
-        if (calculateYearlyIncomes(yearlyReport) != calculateMonthlyIncomes(monthlyReports)) {
-            System.out.println("Выявлено несоответствие данных по доходам в месяце!");
+        if (!calculateYearlyExpenses(yearlyReport).equals(calculateMonthlyExpenses(monthlyReports))) {
+            System.out.println("\n Выявлено несоответствие данных по расходам в месяце! \n");
             return false;
         }
 
-        if (calculateYearlyExpenses(yearlyReport) != calculateMonthlyExpenses(monthlyReports)) {
-            System.out.println("Выявлено несоответствие данных по расходам в месяце!");
-            return false;
-        }
-
-        System.out.println("Данные успешно сверены. Несоответствий не выявлено!");
+        System.out.println("\n Данные успешно сверены. Несоответствий не выявлено! \n");
         return true;
-    } */
+    }
+
 }

@@ -17,11 +17,11 @@ public class Main {
                 int command = scanner.nextInt();
 
                 if (command == 1) {
-                    reportManager.readAllReportMonth("m");
+                    reportManager.readMonthlyReports();
                 } else if (command == 2) {
-                    reportManager.readYearlyReport("y");
+                    reportManager.readYearlyReport();
                 } else if (command == 3) {
-                    reportManager.verifyReports(reportManager.MonthReports,reportManager.YearReports);
+                    reportManager.verifyReports(reportManager.monthlyReports,reportManager.yearlyReports);
                 } else if (command == 4) {
                     reportManager.printReportMonths();
                 } else if (command == 5) {

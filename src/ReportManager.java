@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ReportManager {
 
@@ -13,7 +10,7 @@ public class ReportManager {
 
     String[] monthName = {"Январь","Февраль","Март"};
 
-    String nameInconsistencies = "";
+   // String nameInconsistencies = "";
 
     void readMonthlyReports() {
         for (int i = 1; i < availableMonths(); i++) {
@@ -56,7 +53,7 @@ public class ReportManager {
             }
             yearlyReports.put(monthName[i-1], new YearlyReport(expenses, incomes));
         }
-        System.out.println("\n Готовой отчет успешно загружен! \n");
+        System.out.println("\n Годовой отчет успешно загружен! \n");
     }
 
     MonthRecord makeRecordFromLine(String line) {
@@ -125,28 +122,40 @@ public class ReportManager {
         return productProfitable;
     }
 
-    Integer calculateMonthlyExpenses(HashMap <String, MonthlyReport> monthlyReports) {
+    String verifyInconsistenciesInMonth(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep) {
         int sum = 0;
-        for (MonthlyReport report : monthlyReports.values()) {
-            for (int i = 0; i < report.expenses.size(); i++) {
-                MonthRecord record = report.expenses.get(i);
+        String nameInconsistencies = null;
+        for (Map.Entry<String, MonthlyReport> report : monthlyReports.entrySet()) {
+            for (int i = 0; i < report.getValue().incomes.size(); i++) {
+                MonthRecord record = report.getValue().incomes.get(i);
                 sum += record.unitPrice * record.quantity;
             }
+            if(sum != calculateYearlyIncomes(yearlyRep)){
+                nameInconsistencies = report.getKey();
+
+            }
+
         }
-        return sum;
+        System.out.println("\n Выявлено несоответствие данных по доходам за " +  nameInconsistencies + "! \n");
+        return nameInconsistencies;
     }
 
-    Boolean verifyInconsistenciesInMonth(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep) {
+    String verifyInconsistenciesExpenses(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep){
         int sum = 0;
-
+        String  nameInconsistencies = null;
         for (Map.Entry<String, MonthlyReport> report : monthlyReports.entrySet()) {
             for (int i = 0; i < report.getValue().expenses.size(); i++) {
                 MonthRecord record = report.getValue().expenses.get(i);
                 sum += record.unitPrice * record.quantity;
             }
-            if(sum != calculateYearlyIncomes(yearlyRep)){ nameInconsistencies = report.getKey(); }
+            if(sum != calculateYearlyExpenses(yearlyRep)){
+                nameInconsistencies = report.getKey();
+
+            }
+
         }
-        return true;
+        System.out.println("\n Выявлено несоответствие данных по расходам за " + nameInconsistencies + "! \n");
+        return nameInconsistencies;
     }
 
     Integer calculateYearlyExpenses(HashMap<String, YearlyReport> yearlyReport) {
@@ -231,22 +240,13 @@ public class ReportManager {
 
     void verifyReports(HashMap<String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyReport) {
         if (yearlyReport.size() == 0 || monthlyReports.size() == 0) {
-            System.out.println("\n Ошибка, не считан один из отчетов. \n");
+            System.out.println("\n Ошибка, не считан один из отчетов.\n");
             return;
         }
 
-        //будет выводиться именно этот блок так как есть расхождение в феврале (руками посчитал)
-        if (verifyInconsistenciesInMonth(monthlyReports, yearlyReport)) {
-            System.out.println("\n Выявлено несоответствие данных по доходам в " + nameInconsistencies + "! \n");
-            return;
-        }
-
-        if (!calculateYearlyExpenses(yearlyReport).equals(calculateMonthlyExpenses(monthlyReports))) {
-            System.out.println("\n Выявлено несоответствие данных по расходам в месяце! \n");
-            return;
-        }
-
-        System.out.println("\n Данные успешно сверены. Несоответствий не выявлено! \n");
+        if(verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null |
+                verifyInconsistenciesExpenses(monthlyReports,yearlyReport) == null){
+       System.out.println("\n Данные успешно сверены. Несоответствий не выявлено! \n");}
     }
 
 }

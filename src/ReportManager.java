@@ -234,12 +234,13 @@ public class ReportManager {
             return;
         }
 
-        if(verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null){
+        if(verifyInconsistenciesInMonth(monthlyReports, yearlyReport) != null){
             System.out.println("\n Выявлено несоответствие данных по доходам за " +  verifyInconsistenciesInMonth(monthlyReports, yearlyReport)  + "! \n");
-        }else if(verifyInconsistenciesExpenses(monthlyReports,yearlyReport) == null){
+        }
+        if(verifyInconsistenciesExpenses(monthlyReports,yearlyReport) != null){
             System.out.println("\n Выявлено несоответствие данных по расходам за " +  verifyInconsistenciesInMonth(monthlyReports, yearlyReport)  + "! \n");
-        }else{System.out.println("\n Расхождений не найденно \n");}
-
+        }
+        if(verifyInconsistenciesExpenses(monthlyReports,yearlyReport) == null | verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null){System.out.println("\n Расхождений не найденно \n");}
     }
 
 }

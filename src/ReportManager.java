@@ -10,8 +10,6 @@ public class ReportManager {
 
     String[] monthName = {"Январь","Февраль","Март"};
 
-   // String nameInconsistencies = "";
-
     void readMonthlyReports() {
         for (int i = 1; i < availableMonths(); i++) {
             ArrayList<MonthRecord> monthExpenses = new ArrayList<>();
@@ -31,7 +29,6 @@ public class ReportManager {
         }
         System.out.println("\n Месячные отчеты успешно загружены! \n");
     }
-
 
     int availableMonths() {
         return 4;
@@ -132,11 +129,8 @@ public class ReportManager {
             }
             if(sum != calculateYearlyIncomes(yearlyRep)){
                 nameInconsistencies = report.getKey();
-
             }
-
         }
-        System.out.println("\n Выявлено несоответствие данных по доходам за " +  nameInconsistencies + "! \n");
         return nameInconsistencies;
     }
 
@@ -150,11 +144,8 @@ public class ReportManager {
             }
             if(sum != calculateYearlyExpenses(yearlyRep)){
                 nameInconsistencies = report.getKey();
-
             }
-
         }
-        System.out.println("\n Выявлено несоответствие данных по расходам за " + nameInconsistencies + "! \n");
         return nameInconsistencies;
     }
 
@@ -185,7 +176,6 @@ public class ReportManager {
             System.out.println("Средний расход: " + getAverageExpenseForYear(yearlyReports) + " руб.");
             System.out.println("Средний доход: " + calculateYearlyIncomesAverage(yearlyReports) + " руб.");
         }
-
     }
 
     Integer getAverageExpenseForYear(HashMap<String, YearlyReport> yearlyReport) {
@@ -244,9 +234,12 @@ public class ReportManager {
             return;
         }
 
-        if(verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null |
-                verifyInconsistenciesExpenses(monthlyReports,yearlyReport) == null){
-       System.out.println("\n Данные успешно сверены. Несоответствий не выявлено! \n");}
+        if(verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null){
+            System.out.println("\n Выявлено несоответствие данных по доходам за " +  verifyInconsistenciesInMonth(monthlyReports, yearlyReport)  + "! \n");
+        }else if(verifyInconsistenciesExpenses(monthlyReports,yearlyReport) == null){
+            System.out.println("\n Выявлено несоответствие данных по расходам за " +  verifyInconsistenciesInMonth(monthlyReports, yearlyReport)  + "! \n");
+        }else{System.out.println("\n Расхождений не найденно \n");}
+
     }
 
 }

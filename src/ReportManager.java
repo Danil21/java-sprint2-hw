@@ -68,7 +68,8 @@ public class ReportManager {
         return new YearRecord(
                 tokens[0],
                 Integer.parseInt(tokens[1]),
-                Boolean.parseBoolean(tokens[2])
+                Integer.parseInt(tokens[2]),
+                Boolean.parseBoolean(tokens[3])
         );
     }
 
@@ -121,15 +122,30 @@ public class ReportManager {
 
     String verifyInconsistenciesInMonth(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep) {
         int sum = 0;
+        int sumY = 0;
         String nameInconsistencies = null;
         for (Map.Entry<String, MonthlyReport> report : monthlyReports.entrySet()) {
             for (int i = 0; i < report.getValue().incomes.size(); i++) {
-                MonthRecord record = report.getValue().incomes.get(i);
-                sum += record.unitPrice * record.quantity;
+                MonthRecord recordM = report.getValue().incomes.get(i);
+                sum += recordM.unitPrice * recordM.quantity;
+
+                for (YearlyReport reportY : yearlyRep.values()) {
+                    for (int j = 1; j < reportY.incomes.size(); j++) {
+                        YearRecord record = reportY.incomes.get(j);
+                        sumY = record.getPrice();
+                    }
+                }
+
             }
-            if(sum != calculateYearlyIncomes(yearlyRep)){
+
+
+
+
+            if(sum != sumY){
                 nameInconsistencies = report.getKey();
+
             }
+
         }
         return nameInconsistencies;
     }
@@ -211,7 +227,7 @@ public class ReportManager {
         for (YearlyReport report : yearlyRep.values()) {
             for (int i = 1; i < report.incomes.size(); i++) {
                 YearRecord record = report.incomes.get(i);
-                sum += record.getPrice();
+                sum = record.getPrice();
             }
         }
         return sum;

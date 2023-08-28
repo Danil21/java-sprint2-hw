@@ -5,7 +5,7 @@ public class MonthlyReport {
     название месяца;
     самый прибыльный товар, название товара и сумму;
     самую большую трату, название товара и сумму. */
-    int month; // не нашел простого применения для этого поля
+    int month;
     ArrayList<MonthRecord> expenses;
     ArrayList<MonthRecord> incomes;
 

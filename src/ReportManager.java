@@ -25,7 +25,7 @@ public class ReportManager {
                 if (record.expense) { monthExpenses.add(record); }
                 else { monthEarnings.add(record); }
             }
-            monthlyReports.put(monthName[i-1], new MonthlyReport(i, monthExpenses, monthEarnings));
+            monthlyReports.put(monthName[i-1], new MonthlyReport(i, monthExpenses, monthEarnings)); //кажеться тут надо переделать на Int
         }
         System.out.println("\n Месячные отчеты успешно загружены! \n");
     }
@@ -66,10 +66,9 @@ public class ReportManager {
     YearRecord makeRecordFromLineYear(String line) {
         String[] tokens = line.split(",");
         return new YearRecord(
-                tokens[0],
+                Integer.parseInt(tokens[0]),
                 Integer.parseInt(tokens[1]),
-                Integer.parseInt(tokens[2]),
-                Boolean.parseBoolean(tokens[3])
+                Boolean.parseBoolean(tokens[2])
         );
     }
 
@@ -125,21 +124,15 @@ public class ReportManager {
         int sumY = 0;
         String nameInconsistencies = null;
         for (Map.Entry<String, MonthlyReport> report : monthlyReports.entrySet()) {
-            for (int i = 0; i < report.getValue().incomes.size(); i++) {
+            for (int i= 0; i < report.getValue().incomes.size(); i++) {
                 MonthRecord recordM = report.getValue().incomes.get(i);
                 sum += recordM.unitPrice * recordM.quantity;
-
-                for (YearlyReport reportY : yearlyRep.values()) {
-                    for (int j = 1; j < reportY.incomes.size(); j++) {
-                        YearRecord record = reportY.incomes.get(j);
-                        sumY = record.getPrice();
-                    }
-                }
-
             }
 
-
-
+            for (YearlyReport reportY : yearlyRep.values()) {
+                YearRecord record = reportY.incomes.get(  );
+                sumY = record.getPrice();
+            }
 
             if(sum != sumY){
                 nameInconsistencies = report.getKey();
@@ -149,6 +142,7 @@ public class ReportManager {
         }
         return nameInconsistencies;
     }
+
 
     String verifyInconsistenciesExpenses(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep){
         int sum = 0;

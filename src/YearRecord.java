@@ -11,10 +11,6 @@ public class YearRecord {
         this.expense = expense;  // одно из двух значений: true или false. Обозначает, является ли запись тратой (true) или доходом (false)
     }
 
-    public Integer getNameMonth(){
-        return nameMonth;
-    }
-
     public int getPrice() {
         return amount;
     }

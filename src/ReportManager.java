@@ -3,7 +3,7 @@ import java.util.*;
 public class ReportManager {
 
     HashMap<String, MonthlyReport> monthlyReports = new HashMap<>();
-    HashMap<String, YearlyReport> yearlyReports = new HashMap<>();
+    YearlyReport yearlyReports;
 
     private final FileReader fileReader = new FileReader();
     static String pathDir = "./resources/";
@@ -42,14 +42,13 @@ public class ReportManager {
         ArrayList<YearRecord> expenses = new ArrayList<>();
         ArrayList<YearRecord> incomes = new ArrayList<>();
 
-        for(int i=1; i<availableMonths(); i++){
-            for (int j = 1; j < lines.size(); j++) {
+        for (int j = 1; j < lines.size(); j++) {
                 YearRecord record = makeRecordFromLineYear(lines.get(j));
                 if(record.expense){expenses.add(record);}
                 else {incomes.add(record);}
             }
-            yearlyReports.put(monthName[i-1], new YearlyReport(expenses, incomes));
-        }
+        yearlyReports = new YearlyReport(expenses, incomes);
+
         System.out.println("\n Годовой отчет успешно загружен! \n");
     }
 
@@ -76,7 +75,7 @@ public class ReportManager {
     самый прибыльный товар, название товара и сумму;
     самую большую трату, название товара и сумму. */
     void printReportMonths() {
-        if (monthlyReports.size() == 0) {System.out.println("Отчет не считан"); return;}
+        if (monthlyReports.isEmpty()) {System.out.println("Отчет не считан"); return;}
 
         for(String keyMap : monthName){
             System.out.println("\n" + keyMap + ":");
@@ -107,67 +106,70 @@ public class ReportManager {
         String nameProduct = "";
         HashMap<String,Integer> productProfitable = new HashMap<>();
 
-        for (int i = 0; i < monthlyReport.incomes.size(); i++) {
+            for (int i = 0; i < monthlyReport.incomes.size(); i++) {
 
-            MonthRecord record = monthlyReport.incomes.get(i);
-            if(record.unitPrice > bestPriceProduct){
-                bestPriceProduct = record.unitPrice;
-                nameProduct = record.name;
+                MonthRecord record = monthlyReport.incomes.get(i);
+                if (record.unitPrice > bestPriceProduct) {
+                    bestPriceProduct = record.unitPrice;
+                    nameProduct = record.name;
+                }
             }
-        }
-        productProfitable.put(nameProduct,bestPriceProduct);
+            productProfitable.put(nameProduct, bestPriceProduct);
+
         return productProfitable;
     }
 
-    String verifyInconsistenciesInMonth(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep) {
-        int sum = 0;
-        int sumY = 0;
+    // костыль
+     Integer getNameMothByNumber(String number){
+        int num;
+        if(number.equals(monthName[0])){num=0;}
+        else if(number.equals(monthName[1])){num=1;}
+        else {num=2;}
+        return num;
+     }
+    String verifyInconsistenciesInMonth(HashMap <String, MonthlyReport> monthlyReports, YearlyReport yearlyRep) {
+        int sumMonth = 0;
+        int sumYear;
         String nameInconsistencies = null;
+
         for (Map.Entry<String, MonthlyReport> report : monthlyReports.entrySet()) {
             for (int i= 0; i < report.getValue().incomes.size(); i++) {
                 MonthRecord recordM = report.getValue().incomes.get(i);
-                sum += recordM.unitPrice * recordM.quantity;
+                sumMonth += recordM.unitPrice * recordM.quantity;
             }
 
-            for (YearlyReport reportY : yearlyRep.values()) {
-                YearRecord record = reportY.incomes.get(  );
-                sumY = record.getPrice();
-            }
+            YearRecord record = yearlyRep.incomes.get(getNameMothByNumber(report.getKey()));
+            sumYear = record.getPrice();
 
-            if(sum != sumY){
+            if(sumMonth != sumYear){
                 nameInconsistencies = report.getKey();
-
             }
-
+            sumMonth=0;
         }
         return nameInconsistencies;
     }
 
 
-    String verifyInconsistenciesExpenses(HashMap <String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyRep){
-        int sum = 0;
-        String  nameInconsistencies = null;
+    String verifyExpensesInMonth(HashMap <String, MonthlyReport> monthlyReports, YearlyReport yearlyRep) {
+        int sumMonth = 0;
+        int sumYear;
+        String nameInconsistencies = null;
+
         for (Map.Entry<String, MonthlyReport> report : monthlyReports.entrySet()) {
-            for (int i = 0; i < report.getValue().expenses.size(); i++) {
-                MonthRecord record = report.getValue().expenses.get(i);
-                sum += record.unitPrice * record.quantity;
+            for (int i= 0; i < report.getValue().expenses.size(); i++) {
+                MonthRecord recordM = report.getValue().expenses.get(i);
+                sumMonth += recordM.unitPrice * recordM.quantity;
             }
-            if(sum != calculateYearlyExpenses(yearlyRep)){
+
+            YearRecord record = yearlyRep.expenses.get(getNameMothByNumber(report.getKey()));
+            sumYear = record.getPrice();
+
+            if(sumMonth != sumYear){
                 nameInconsistencies = report.getKey();
             }
+            sumMonth=0;
         }
         return nameInconsistencies;
-    }
-
-    Integer calculateYearlyExpenses(HashMap<String, YearlyReport> yearlyReport) {
-        int sum = 0;
-        for (YearlyReport report : yearlyReport.values()) {
-            for (int i = 1; i < report.expenses.size(); i++) {
-                YearRecord record = report.expenses.get(i);
-                sum += record.getPrice();
-            }
-        }
-        return sum;
     }
 
         /* Информация из годового отчёта.
@@ -178,24 +180,23 @@ public class ReportManager {
     средний доход за все имеющиеся операции в году. */
 
     void printYearReport() {
-        if (yearlyReports.size() == 0) {System.out.println("Отчет не считан"); return;}
+        if (yearlyReports == null) {System.out.println("Отчет не считан"); return;}
 
         for(String keyMap : monthName){
             System.out.println("\n" + keyMap);
-            System.out.println("Прибыль: " + getProfitForMonth(yearlyReports.get(keyMap)) + " руб.");
+            System.out.println("Прибыль: " + getProfitForMonth(yearlyReports) + " руб.");
             System.out.println("Средний расход: " + getAverageExpenseForYear(yearlyReports) + " руб.");
             System.out.println("Средний доход: " + calculateYearlyIncomesAverage(yearlyReports) + " руб.");
         }
     }
 
-    Integer getAverageExpenseForYear(HashMap<String, YearlyReport> yearlyReport) {
+    Integer getAverageExpenseForYear(YearlyReport yearlyReport) {
         int average = 0;
-        for (YearlyReport report : yearlyReport.values()) {
-            for (int i = 1; i < report.expenses.size(); i++) {
-                YearRecord record = report.expenses.get(i);
-                average += record.getPrice() / report.expenses.size();
+
+        for (int i = 1; i < yearlyReport.expenses.size(); i++) {
+                YearRecord record = yearlyReport.expenses.get(i);
+                average += record.getPrice() / yearlyReport.expenses.size();
             }
-        }
         return average;
     }
 
@@ -216,30 +217,17 @@ public class ReportManager {
         return incAmount - expAmount;
     }
 
-    Integer calculateYearlyIncomes(HashMap<String, YearlyReport> yearlyRep) {
+    Integer calculateYearlyIncomesAverage(YearlyReport yearlyRep) {
         int sum = 0;
-        for (YearlyReport report : yearlyRep.values()) {
-            for (int i = 1; i < report.incomes.size(); i++) {
-                YearRecord record = report.incomes.get(i);
-                sum = record.getPrice();
+            for (int i = 1; i < yearlyRep.incomes.size(); i++) {
+                YearRecord record = yearlyRep.incomes.get(i);
+                sum += record.getPrice() / yearlyRep.incomes.size();
             }
-        }
         return sum;
     }
 
-    Integer calculateYearlyIncomesAverage(HashMap<String, YearlyReport> yearlyRep) {
-        int sum = 0;
-        for (YearlyReport report : yearlyRep.values()) {
-            for (int i = 1; i < report.incomes.size(); i++) {
-                YearRecord record = report.incomes.get(i);
-                sum += record.getPrice() / report.incomes.size();
-            }
-        }
-        return sum;
-    }
-
-    void verifyReports(HashMap<String, MonthlyReport> monthlyReports, HashMap<String, YearlyReport> yearlyReport) {
-        if (yearlyReport.size() == 0 || monthlyReports.size() == 0) {
+    void verifyReports(HashMap<String, MonthlyReport> monthlyReports, YearlyReport yearlyReport) {
+        if (yearlyReport == null || monthlyReports.size() == 0) {
             System.out.println("\n Ошибка, не считан один из отчетов.\n");
             return;
         }
@@ -247,10 +235,10 @@ public class ReportManager {
         if(verifyInconsistenciesInMonth(monthlyReports, yearlyReport) != null){
             System.out.println("\n Выявлено несоответствие данных по доходам за " +  verifyInconsistenciesInMonth(monthlyReports, yearlyReport)  + "! \n");
         }
-        if(verifyInconsistenciesExpenses(monthlyReports,yearlyReport) != null){
+        if(verifyExpensesInMonth(monthlyReports,yearlyReport) != null){
             System.out.println("\n Выявлено несоответствие данных по расходам за " +  verifyInconsistenciesInMonth(monthlyReports, yearlyReport)  + "! \n");
         }
-        if(verifyInconsistenciesExpenses(monthlyReports,yearlyReport) == null | verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null){System.out.println("\n Расхождений не найденно \n");}
+        if(verifyExpensesInMonth(monthlyReports,yearlyReport) == null | verifyInconsistenciesInMonth(monthlyReports, yearlyReport) == null){System.out.println("\n Расхождений не найденно \n");}
     }
 
 }
